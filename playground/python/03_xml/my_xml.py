@@ -4,6 +4,16 @@ import xml.etree.ElementTree as ET
 import pprint
 from pathlib import Path
 
+bankRelTemplate="""
+<data>
+    <bank>{ipid}</bank>
+</data>
+"""
+
+def get_bank_relationship(p_ipid, p_argList):
+    t_request = bankRelTemplate.replace('{ipid}',p_ipid)
+    print(t_request)
+
 def get_column_place(p_filename, p_colName, p_separator=';'):
     t_file = Path(p_filename)
     if t_file.is_file():
@@ -14,7 +24,7 @@ def get_column_place(p_filename, p_colName, p_separator=';'):
         try:
             return t_header.index(p_colName)
         except:
-            print("Unable to find column: {} 
+            print("Unable to find column: {}". format(p_colName))
             return -1
     else:
         print ('File not found: {}'.format(p_filename))
@@ -27,6 +37,13 @@ def main():
     args = parser.parse_args()
     pprint.pprint(args)
     t_ipidPos = get_column_place(args.infile, args.ipid_col)
+
+    tree = ET.parse('response.xml')
+    root = tree.getroot()
+    for child in root:
+        print(child.tag, child.attrib)
+    
+    get_bank_relationship('test','')
 
 if __name__ == "__main__":
     main()
