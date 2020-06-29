@@ -20,6 +20,7 @@ set foldmethod=indent
 set number
 set relativenumber
 set fileformat=unix
+set hls
 
 set path+=**
 set wildmenu

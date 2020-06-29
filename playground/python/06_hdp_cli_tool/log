@@ -1,0 +1,5 @@
+2020-06-26 21:03:09,690| DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): h1:8080
+2020-06-26 21:03:09,710| ERROR | root | HTTPSConnectionPool(host='h1', port=8080): Max retries exceeded with url: /api/v1 (Caused by SSLError(SSLError(1, '[SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1056)')))
+2020-06-26 22:59:47,700| DEBUG | root | Trying HTTPS connection to: https://h1:8080/api/v1/clusters/
+2020-06-26 22:59:47,702| DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): h1:8080
+2020-06-26 22:59:47,714| WARNING | root | HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
