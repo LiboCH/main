@@ -1,0 +1,97 @@
+conky.config = {
+    own_window = true,
+    own_window_class = 'Conky',
+    own_window_type = 'desktop',
+    own_window_transparent = false,
+    own_window_argb_visual = true,
+    own_window_argb_value = 0,
+    own_window_hints = 'below',
+    own_window_colour = 'black',
+    own_window_title = 'Conky',
+    minimum_width = 600,
+    double_buffer = true,
+    gap_x = 20,
+    gap_y = -20,
+    alignment = 'middle_right',
+    use_xft = true,
+    font = 'RobotoMono-Regular:size=11',
+    xftalpha = 1,
+    override_utf8_locale = true,
+    draw_shades = true,
+    draw_outline = true,
+    default_outline_color = 'black',
+    uppercase = false,
+    default_color = 'd8e5f2',
+    color1 = '85BCF2',
+    color2 = '85BCF2',
+    draw_borders = false,
+    stippled_borders = 0,
+    border_inner_margin = 5,
+    border_outer_margin = 0,
+    border_width = 0,
+    draw_graph_borders = yes,
+    background = false,
+    use_spacer = 'left',
+    text_buffer_size = 256,
+    no_buffers = true,
+    short_units = true,
+    pad_percents = 2,
+    temperature_unit = 'celsius',
+    update_interval = 2,
+    if_up_strictness = 'address',
+    top_name_width = 10, 
+    use_spacer='none'
+
+
+}
+
+conky.text = [[
+${alignc}${voffset -6}${color2}${font ConkySymbols:size=24}U${font} ${voffset -12}${font RobotoMono-Bold:size=12}${color2}${execi 30000 bash -c 'source /etc/os-release; echo "$NAME $VERSION - $(cinnamon --version)"'}${font}
+${voffset 12}${color2}${nodename}${alignr}${kernel}-${machine}
+${voffset 6}${color1}Battery charge${tab 80,0}${color}${battery_percent BAT1}%\
+${color1}${alignr}Uptime  ${color}${uptime}
+${if_match ${battery_percent BAT1} < 100}\
+${color1}Battery life${tab 80,0}${color}${battery_time BAT1}\
+${endif}
+${voffset 8}${color2}${font ConkySymbols:size=24}F${font} ${voffset -12}${font RobotoMono-Bold:size=12}CPU ${hr 2}${font}
+${voffset 12}${color1}Core 1	${tab 40,0}${color}${freq_g 1}GHz	${alignr}${cpu cpu1}%  ${cpubar cpu1 5,100}
+${color1}Core 2	${tab 40,0}${color}${freq_g 2}GHz	${alignr}${cpu cpu2}%  ${cpubar cpu2 5,100}
+${color1}Core 3	${tab 40,0}${color}${freq_g 3}GHz	${alignr}${cpu cpu3}%  ${cpubar cpu3 5,100}
+${color1}Core 4	${tab 40,0}${color}${freq_g 4}GHz	${alignr}${cpu cpu4}%  ${cpubar cpu4 5,100}
+${color1}Core 5	${tab 40,0}${color}${freq_g 1}GHz	${alignr}${cpu cpu5}%  ${cpubar cpu5 5,100}
+${color1}Core 6	${tab 40,0}${color}${freq_g 2}GHz	${alignr}${cpu cpu6}%  ${cpubar cpu6 5,100}
+${color1}Core 7	${tab 40,0}${color}${freq_g 3}GHz	${alignr}${cpu cpu7}%  ${cpubar cpu7 5,100}
+${color1}Core 8	${tab 40,0}${color}${freq_g 4}GHz	${alignr}${cpu cpu8}%  ${cpubar cpu8 5,100}
+${voffset 6}${color1}Load	${tab 40,0}${color}${loadavg} ${alignr}${color1}Governor		${color}${execi 30 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor}
+${color1}Temp	${tab 40,0}${color}${exec sensors coretemp-isa-0000 | grep 'Package id 0' | cut -d' ' -f5 | cut -c2-} 
+${voffset 8}${color2}${font ConkySymbols:size=24}j${font} ${voffset -12}${font RobotoMono-Bold:size=12}Memory ${hr 2}${font}
+${voffset 12}${color1}RAM	${tab 40,0}${color}${mem} / ${memmax} ${alignr}${color}${memperc}%	${membar 5,100}
+${color1}Swap	${tab 40,0}${color}${swap} / ${swapmax} ${alignr}${color}${alignr}${swapperc}% ${swapbar 5,100}
+${voffset 8}${color2}${font ConkySymbols:size=24}N${font} ${voffset -12}${font RobotoMono-Bold:size=12}Processes ${hr 2}${font}
+${voffset 12}${color1}${top name 1}	${tab 30,0}${color}${top cpu 1}%			${alignr}${color1}${top_mem name 1}  ${alignr}${color}${top_mem mem_res 1}
+${color1}${top name 2}	${tab 30,0}${color}${top cpu 2}%			${alignr}${color1}${top_mem name 2}  ${alignr}${color}${top_mem mem_res 2}
+${color1}${top name 3}	${tab 30,0}${color}${top cpu 3}%			${alignr}${color1}${top_mem name 3}  ${alignr}${color}${top_mem mem_res 3}
+${color1}${top name 4}	${tab 30,0}${color}${top cpu 4}%			${alignr}${color1}${top_mem name 4}  ${alignr}${color}${top_mem mem_res 4}
+${color1}${top name 5}	${tab 30,0}${color}${top cpu 5}%			${alignr}${color1}${top_mem name 5}  ${alignr}${color}${top_mem mem_res 5}
+${voffset 8}${color2}${font ConkySymbols:size=24}K${font} ${voffset -12}${font RobotoMono-Bold:size=12}Storage ${hr 2}${font}
+${voffset 12}${color1}Root${tab 40,0}${color}${fs_used /} / ${fs_size /} ${color}${alignr}${fs_used_perc /}% ${fs_bar 5,100 /}
+${color1}Home${tab 40,0}${color}${fs_used /home} / ${fs_size /home} ${color}${alignr}${fs_used_perc /home}% ${fs_bar 5,100 /home}
+${if_mounted /mnt/google_drive}\
+${color1}G_Drive${tab 40,0}${color}${fs_used /mnt/google_drive} / ${fs_size /mnt/google_drive} ${color}${alignr}${fs_used_perc /mnt/google_drive}% ${fs_bar 5,100 /mnt/google_drive}\
+${else}\
+${color1}G_Drive${tab 40,0}${color}Not Mounted\
+${endif}
+${voffset 8}${color2}${font ConkySymbols:size=24}G${font} ${voffset -12}${font RobotoMono-Bold:size=12}Network ${hr 2}${font}
+${if_up wlp107s0}\
+${voffset 6}${color1}SSID	${tab 40,0}${color}${wireless_essid wlp107s0}\
+${alignr}${color1}IP Address	${color}${addr wlp107s0}
+${color1}Bitrate${tab 40,0}${color}${wireless_bitrate wlp107s0}\
+${alignr}${color}${wireless_link_qual_perc wlp107s0}%	${wireless_link_bar 5,100 wlp107s0}
+${color1}Total down/up	${alignr}${color}${totaldown wlp107s0}  ${color1}/  ${color}${totalup wlp107s0}
+${color1}Speed down/up	${alignr}${color}${downspeed wlp107s0}  ${color1}/  ${color}${upspeed wlp107s0}
+${downspeedgraph wlp107s0 70,700 ${color1} ${color2} }
+
+${else}\
+${voffset 6}${color1}No Wireless Connection\
+${endif}
+]]
