@@ -1,0 +1,7 @@
+---
+# tasks file for repostiory
+- name: Install Httpd server
+  become: yes
+  yum:
+    name: httpd
+    state: present

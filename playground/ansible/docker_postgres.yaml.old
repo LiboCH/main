@@ -1,0 +1,17 @@
+- hosts: local-py2
+  gather_facts: yes 
+
+  tasks:
+    - name: install docker package
+      become: yes
+      apt:
+        name: docker
+        state: present
+    
+    - name: prepare local storage 
+      file: 
+        path: /home/libo/pgdata
+        state: directory
+
+
+

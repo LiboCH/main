@@ -3,3 +3,24 @@
 2020-06-26 22:59:47,700| DEBUG | root | Trying HTTPS connection to: https://h1:8080/api/v1/clusters/
 2020-06-26 22:59:47,702| DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): h1:8080
 2020-06-26 22:59:47,714| WARNING | root | HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
+2020-07-03:21:39:31,533 WARNING  [hdp.py:69] HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
+2020-07-03:21:39:31,557 INFO     [hdp.py:85] Discovered cluster name: LiboPOC
+2020-07-03:21:39:31,622 WARNING  [hdp.py:150] Service: HBASE already in requested state: STARTED
+2020-07-03:21:40:30,682 WARNING  [hdp.py:69] HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
+2020-07-03:21:40:30,715 INFO     [hdp.py:85] Discovered cluster name: LiboPOC
+2020-07-03:21:40:30,796 WARNING  [hdp.py:150] Service: HBASE already in requested state: STARTED
+2020-07-03:21:42:07,313 WARNING  [hdp.py:69] HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
+2020-07-03:21:42:07,339 INFO     [hdp.py:85] Discovered cluster name: LiboPOC
+2020-07-03:21:42:07,388 WARNING  [hdp.py:150] Service: HBASE already in requested state: STARTED
+2020-07-03:21:44:00,875 WARNING  [hdp.py:69] HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
+2020-07-03:21:44:00,901 INFO     [hdp.py:85] Discovered cluster name: LiboPOC
+2020-07-03:21:44:00,971 INFO     [hdp.py:130] Stopping HBASE via REST
+2020-07-03:21:44:01,106 INFO     [hdp.py:114] Detected state for service:HBASE componnent: HBASE_CLIENT -> STOPPED
+2020-07-03:21:44:04,261 INFO     [hdp.py:114] Detected state for service:HBASE componnent: HBASE_MASTER -> STOPPING
+2020-07-03:21:44:07,952 INFO     [hdp.py:114] Detected state for service:HBASE componnent: HBASE_REGIONSERVER -> STOPPING
+2020-07-03:21:44:07,982 INFO     [hdp.py:114] Detected state for service:HBASE componnent: PHOENIX_QUERY_SERVER -> INACTIVE
+2020-07-03:21:44:08,62  INFO     [hdp.py:142] Current service status: STOPPING, requested opperation in progress... Timeout in 177s
+2020-07-03:21:44:11,115 INFO     [hdp.py:147] Service: HBASE -> INSTALLED
+2020-07-03:22:00:38,416 WARNING  [hdp.py:69] HTTPS connection failed, trying HTTP: http://h1:8080/api/v1/clusters/
+2020-07-03:22:00:38,449 INFO     [hdp.py:85] Discovered cluster name: LiboPOC
+2020-07-03:22:00:38,515 WARNING  [hdp.py:150] Service: HBASE already in requested state: INSTALLED

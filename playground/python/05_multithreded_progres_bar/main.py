@@ -14,5 +14,5 @@ def some_task():
 
 
 if __name__ == '__main__':
-    monitor=monMaster();
+    monitor=monMaster('my_log_dir/my_log_file');
     some_task()

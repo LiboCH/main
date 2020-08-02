@@ -1,0 +1,11 @@
+[local-py2]
+localhost ansible_connection=local  
+
+[local-py3]
+localhost 
+
+[local-py3:vars]
+ansible_connection=local 
+ansible_python_interpreter=/home/libo/miniconda3/envs/py37/bin/python
+
+

@@ -38,30 +38,33 @@ class bcolors:
 	CWHITE2  = '\33[97m'
 
 class monThread (threading.Thread):
-    def __init__(self,name,threads):
+    def __init__(self,name,threads,log_file):
         threading.Thread.__init__(self)
         self.name = name
         self.threads=threads
+        self.log_file=log_file
 
     def run(self):
         timeout=100
         i=0
-        while self.threads[self.name]['status'] == 'running' and i <= timeout:
-            print_task(self.name,self.threads[self.name]['status'],i)
+        #while self.threads[self.name]['status'] == 'running' and i <= timeout:
+        while self.threads[self.name]['status'] == 'running':
+            print_task(self.name,self.threads[self.name]['status'],i,self.log_file)
             i+=1
             time.sleep(0.1)
 
-        if i > timeout:
-            print_task(self.name,'timeout',i)
-        else:
-            print_task(self.name,self.threads[self.name]['status'],i)
+        #if i > timeout:
+        #    print_task(self.name,'timeout',i)
+        #else:
+        print_task(self.name,self.threads[self.name]['status'],i,self.log_file)
 
 class monMaster():
-    def __init__(self):
+    def __init__(self,log_file='None'):
         self.threads={}
+        self.log_file=log_file
 
     def start(self,name):
-        thread = monThread(name,self.threads)
+        thread = monThread(name,self.threads,self.log_file)
         self.threads[name]={'thread':thread, 'status':'running'}
         thread.start()
 
@@ -69,7 +72,7 @@ class monMaster():
         self.threads[name]['status']=status
         self.threads[name]['thread'].join()
 
-def print_task(task_name,state,counter):
+def print_task(task_name,state,counter,log_file):
     exit_states={
         'success':"["+bcolors.CGREEN2+"SUCCESS"+bcolors.CEND+"]",
         'error':"["+bcolors.CRED2+" ERROR "+bcolors.CEND+"]",
@@ -95,4 +98,4 @@ def print_task(task_name,state,counter):
         if state != 'error':
             print(f'{exit_states[state]}',flush=True)
         else:
-            print(f'{exit_states[state]} log: /some/log/path/file.log',flush=True)
+            print(f'{exit_states[state]} log: {log_file}',flush=True)
