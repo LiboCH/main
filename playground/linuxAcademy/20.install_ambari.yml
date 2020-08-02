@@ -1,0 +1,71 @@
+---
+- hosts: all 
+  user: root
+  tasks:
+      - name: Selinux permessive
+        selinux:
+            policy: targeted
+            state: permissive
+
+      - name: Yum | install ntp
+        yum:
+            name: "{{ packages }}"
+            state: latest
+        vars:
+            packages:
+                - ntp
+                - postgresql-jdbc*
+
+      - name: Add ambari repo
+        yum_repository:
+            name: ambari
+            description: Ambari repo
+            baseurl: "http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.7.3.0"
+            state: present
+            gpgcheck: yes
+            gpgkey: "http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.7.3.0/RPM-GPG-KEY/RPM-GPG-KEY-Jenkins"
+
+      - name: Install ambari-agent package 
+        package:
+            name: ambari-agent
+            update_cache: yes
+            state: latest
+        notify: Reload systemd
+
+      - name: Set Ambari Server in the agent cofiguration file
+        lineinfile:
+            path: /etc/ambari-agent/conf/ambari-agent.ini
+            regexp: "^hostname="
+            line: "hostname=libo1c.mylabserver.com"
+            state: present
+        notify: Restart ambari-agent
+
+      - name: Configre Ambair agent to user TLS 1.2
+        ini_file:
+            path: /etc/ambari-agent/conf/ambari-agent.ini
+            create: no
+            section: "security"
+            option: "force_https_protocol"
+            value: "PROTOCOL_TLS1v_2"
+            state: present
+        notify: Restart ambari-agent
+
+      - name: Start ambari agent service
+        service:
+            name: ambari-agent
+            state: started
+  
+      - name: Enable ambari agent service
+        service:
+            name: ambari-agent
+            enabled: yes
+        ignore_errors: true
+
+  handlers:
+      - name: Reload systemd
+        systemd:
+            daemon_reload: yes
+      - name: Restart ambari-agent
+        service:
+            name: ambari-agent
+            state: restarted
