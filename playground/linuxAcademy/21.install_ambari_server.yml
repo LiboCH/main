@@ -1,0 +1,73 @@
+---
+- hosts: ambs
+  user: root
+  vars:
+    openjdk_path: /usr/lib/jvm/java-1.8.0-openjdk
+    postgres_packages:
+        - postgresql
+        - python-psycopg2
+        - postgresql-jdbc
+    postgres_jdbc_location: /usr/share/java/postgresql-jdbc.jar
+
+
+  tasks:
+      - name: Istall ambari server
+        yum:
+            name: ambari-server
+            state: latest
+        notify: Reload systemd
+
+      - name: Install postgres
+        yum:
+            name:
+                - postgresql
+                - postgresql-jdbc
+                - python-psycopg2
+                - bash
+                - openssl
+            state: latest
+
+      - name: ensure postgresql data directocy exists
+        file:
+            path: /var/lib/pgsql/data
+            owner: postgres
+            group: postgres
+            state: directory
+            mode: 0700
+       
+      - name: check if postgres is initialized
+        stat:
+            path: /var/lib/pgsql/data/PG_VERSION
+        register: pgdata_dir_version
+
+      - name: Ensure postgres database is initialized 
+        command: /usr/bin/initdb -D /var/lib/pgsql/data
+        when: not pgdata_dir_version.stat.exists
+        become: true
+        become_user: postgres
+        vars:
+            ansible_ssh_pipelining: true
+
+      - name: Start postgres
+        service:
+            name: postgresql
+            state: started
+            enabled : yes
+                
+      - name: Load Ambari Server schema
+        postgresql_db:
+            name: ambari
+            maintenance_db: postgres
+            login_host: libo1c.mylabserver.com
+            port: 5432
+            #login_user: ambari
+            #login_password: ambari
+            state: restore
+            target: /var/lib/ambari-server/resources/Ambari-DDL-Postgres-CREATE.sql
+ 
+
+
+  handlers:
+      - name: Reload systemd
+        systemd:
+            daemon_reload: yes

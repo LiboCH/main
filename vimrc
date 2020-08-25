@@ -20,6 +20,7 @@ set foldmethod=indent
 set number
 set relativenumber
 set fileformat=unix
+set hls
 
 set path+=**
 set wildmenu
@@ -72,3 +73,6 @@ filetype plugin indent on    " required
 let python_highlight_all=1
 set laststatus=2
 set t_Co=256
+
+:nmap <F5> <Esc>:w<cr>:!python %<cr>
+:imap <F5> <Esc>:w<cr>:!python %<cr>
