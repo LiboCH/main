@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+    database:
+        container_name: postgres-master
+        image: "postgres:11.9" 
+        env_file:
+            - database.env
+        volumes:
+            - data-master:/var/lib/postgresql/data
+#        command: bash -c "echo aaa"
+
+volumes:
+    data-master:
+        driver: local
+        driver_opts:
+            o: bind
+            type: none
+            device: /home/libo/git/liboch/main/playground/python/07_postgres_docker/data-master
+  
+##  slave-data:
+##    driver: local
+##    driver_opts:
+##      o: bind
+##      type: none
+##      device: /home/libo/git/liboch/main/playground/python/07_postgres_docker/slave-data
+##
