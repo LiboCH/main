@@ -10,6 +10,8 @@ services:
             - data-master:/var/lib/postgresql/data
             - ./replication-entrypoint.sh:/replication-entrypoint.sh
         command: bash -c '/replication-entrypoint.sh && docker-entrypoint.sh postgres'
+        ports: 
+            - 5432:5432
 
 volumes:
     data-master:
