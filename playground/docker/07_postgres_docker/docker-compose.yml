@@ -8,7 +8,10 @@ services:
             - database.env
         volumes:
             - data-master:/var/lib/postgresql/data
-#        command: bash -c "echo aaa"
+            - ./replication-entrypoint.sh:/replication-entrypoint.sh
+        command: bash -c '/replication-entrypoint.sh && docker-entrypoint.sh postgres'
+        ports: 
+            - 5432:5432
 
 volumes:
     data-master:
@@ -16,7 +19,7 @@ volumes:
         driver_opts:
             o: bind
             type: none
-            device: /home/libo/git/liboch/main/playground/python/07_postgres_docker/data-master
+            device: /home/libo/git/liboch/main/playground/docker/07_postgres_docker/data-master
   
 ##  slave-data:
 ##    driver: local
