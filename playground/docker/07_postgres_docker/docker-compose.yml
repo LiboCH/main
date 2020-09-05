@@ -4,12 +4,16 @@ services:
     database:
         container_name: postgres-master
         image: "postgres:11.9" 
+        user:
+            1000:1000
         env_file:
             - database.env
         volumes:
             - data-master:/var/lib/postgresql/data
             - ./replication-entrypoint.sh:/replication-entrypoint.sh
-        command: bash -c '/replication-entrypoint.sh && docker-entrypoint.sh postgres'
+            - /etc/passwd:/etc/passwd:ro
+#command: bash -c '/replication-entrypoint.sh && docker-entrypoint.sh postgres'
+        command: bash -c 'sleep 1000'
         ports: 
             - 5432:5432
 
