@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+#chown -R 1000:1000 /var/lib/postgresql/data
+
+replication_user=replicator
+master_ip=192.168.0.129
+slave_ip=192.168.0.129
+pg_hba_file=/var/lib/postgresql/data/pg_hba.conf
+conf_file=/var/lib/postgresql/data/postgresql.conf
+
+#gosu postgres pg_basebackup -h 192.168.43.179 -P -D /var/lib/postgresql/data/ -U replicator --wal-method=fetch
+[[ -f /var/lib/postgresql/data/MasterNow ]] && exit
+gosu postgres rm -rf /var/lib/postgresql/data/*
+
+gosu postgres echo "${master_ip}:5432:replication:replicator:replicator" > /var/lib/postgresql/.pgpass &&
+    chmod 600 /var/lib/postgresql/.pgpass && chown postgres var/lib/postgresql/.pgpass
+
+gosu postgres pg_basebackup -h $master_ip -D /var/lib/postgresql/data/ -U replicator --wal-method=fetch
+
+pg_hba_line="host\treplication\t${replication_user}\tall\tmd5\n"
+if [[ $( grep "$( printf ${pg_hba_line})" ${pg_hba_file} | wc -l | xargs ) -eq 0 ]] ; then
+    echo "No replicator in pg_hba.conf, adding... "
+    printf $pg_hba_line >> ${pg_hba_file}
+fi   
+
+postgres_line_check="^hot_stndby = on\n"
+if [[ $( grep -E "$( printf "${postgres_line_check}")" ${conf_file} | wc -l | xargs ) -eq 0 ]] ; then 
+    echo "No requred conf in postgres.conf, adding..."
+    grep -v  -e "wal_level" -e "max_wal_senders" -e "wall_keep_segments" -e "hot_standby" ${conf_file} > ${conf_file}.tmp
+    mv ${conf_file}.tmp ${conf_file}
+    postgres_line="wal_level = replica\nmax_wal_senders = 10\nwal_keep_segments = 64\nhot_standby = on\n"
+    printf "${postgres_line}" >> ${conf_file}
+fi
+
+printf "standby_mode = 'on'\nprimary_conninfo = 'host=${master_ip} port=5432 user=replicator password=replicator'\ntrigger_file = '/var/lib/postgresql/data//MasterNow'\n" >  /var/lib/postgresql/data/recovery.conf

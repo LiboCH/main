@@ -1,0 +1,73 @@
+#!/bin/bash
+#TODO: check if volume exist if not, create it
+docker volume create -d local \
+    -o device=/home/libo/git/liboch/main/playground/docker/07_postgres_docker/data-slave \
+    -o o=bind \
+    -o type=none \
+    vol.postgres-slave
+
+docker run -d --rm \
+    -v vol.postgres-slave:/var/lib/postgresql/data \
+    -v /home/libo/git/liboch/main/playground/docker/07_postgres_docker/setup-slave.sh:/setup-slave.sh \
+    --name postgres-slave-init \
+    postgres:11.9  /setup-slave.sh
+
+sleep 2
+#TODO: wait for backup to finish
+docker run -it --rm \
+    -e POSTGRES_PASSWORD=password \
+    -v vol.postgres-slave:/var/lib/postgresql/data \
+    -p 5433:5432  \
+    --name postgres-slave \
+    postgres:11.9
+
+
+exit
+#TODO: this wait is not working, when postgres is not up it crasches 
+i=30
+while [[ $i -gt 0 ]] ; do
+    
+    echo "Checking if postgres is up : ${i}s" 
+    cmd="docker exec -it postgres-master-init gosu postgres psql -Atc \"select 1 from pg_roles where 'postgres'=rolname\";"
+    out=$( eval "$cmd" )
+    [[ $? -eq 0 ]]  &&  break
+    echo "Unable to connect, waiting..."
+    i=$((  i - 1 ))
+    sleep 1
+done
+#TODO: if timeout reached 
+
+replication_user=replicator
+replication_pass=replicator
+
+cmd="docker exec -it postgres-master-init gosu postgres psql -Atc \"select 1 from pg_roles where '$replication_user'=rolname\";"
+out=$( eval "$cmd" | sed 's/.$//' )
+
+if  [[  $out  != "1" ]] ; then 
+    echo " No replicator user found, creating "
+    cmd="docker exec -it postgres-master-init gosu postgres psql -c \"CREATE USER $replication_user REPLICATION LOGIN CONNECTION LIMIT 1 ENCRYPTED PASSWORD '$replication_pass';\""
+    echo "${cmd}"
+    out=$( eval "$cmd" )
+    echo $out
+else
+    echo "Replication user found. skipping"
+fi
+echo "Stopping postgres-master-init"
+docker stop postgres-master-init
+echo "Changing the owner of postgres files"
+#TODO: add missing user to /etc/passwd ?? 
+docker run -d --rm \
+    -v vol.postgres-master:/var/lib/postgresql/data \
+    -v /home/libo/git/liboch/main/playground/docker/07_postgres_docker/setup-master.sh:/setup-master.sh \
+    bash /setup-master.sh
+
+echo "Starting postgres-master"
+#start and expose 
+docker run -it --rm \
+    --user 1000:1000 \
+    -e POSTGRES_PASSWORD=password \
+    -v vol.postgres-master:/var/lib/postgresql/data \
+    -p 5432:5432  \
+    --name postgres-master \
+    postgres:11.9
+
