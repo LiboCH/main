@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+    database:
+        container_name: postgres-slave
+        image: "postgres:11.9" 
+        env_file:
+            - database.env
+        volumes:
+            - data-slave:/var/lib/postgresql/data
+            - ./replication-entrypoint-slave.sh:/replication-entrypoint.sh
+        command: bash -c '/replication-entrypoint.sh'
+        ports: 
+            - 5433:5432
+
+volumes:
+    data-slave:
+        driver: local
+        driver_opts:
+            o: bind
+            type: none
+            device: /home/libo/git/liboch/main/playground/docker/07_postgres_docker/data-slave
+  
+##  slave-data:
+##    driver: local
+##    driver_opts:
+##      o: bind
+##      type: none
+##      device: /home/libo/git/liboch/main/playground/python/07_postgres_docker/slave-data
+##

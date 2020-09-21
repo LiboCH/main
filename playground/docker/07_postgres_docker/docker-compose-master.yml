@@ -20,11 +20,3 @@ volumes:
             o: bind
             type: none
             device: /home/libo/git/liboch/main/playground/docker/07_postgres_docker/data-master
-  
-##  slave-data:
-##    driver: local
-##    driver_opts:
-##      o: bind
-##      type: none
-##      device: /home/libo/git/liboch/main/playground/python/07_postgres_docker/slave-data
-##
