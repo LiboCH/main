@@ -19,7 +19,8 @@ logMessage INFO "Checking is user: ${REPLICATION_USER} can connet to: ${MASTER_I
 cmd="gosu postgres psql -U ${REPLICATION_USER} -h ${MASTER_IP} -p ${MASTER_PORT} -d postgres -Atc \"select 1;\" 2>&1"
 logMessage DEBIG "cmd: ${cmd}"
 out=$( eval "$cmd" )
-[[ ${out} != 1 ]] && ( logMessage ERROR "Master not avaliable... exiting"; exit 2)
+[[ ${out} != 1 ]] &&  logMessage ERROR "Master not avaliable... exiting" && exit 2 
+#if [[ ${out} != 1 ]] ; then logMessage ERROR "Master not avaliable... exiting" ; exit 2 ;  fi
 
 logMessage INFO "Master avaliable, creating base backup"
 rm -rf /var/lib/postgresql/data/*
@@ -48,7 +49,8 @@ if [[ $( grep -E "$( printf "${postgres_line_check}")" ${conf_file} | wc -l | xa
 fi
 
 printf "standby_mode = 'on'\nprimary_conninfo = 'host=${MASTER_IP} port=${MASTER_PORT} user=${REPLICATION_USER} password=${REPLICATION_PASS}'\ntrigger_file = '/var/lib/postgresql/data//MasterNow'\n" >  /var/lib/postgresql/data/recovery.conf
+chown postgres:postgres /var/lib/postgresql/data/recovery.conf
 
 
 logMessage INFO "Starting postgres stand-by"
-gosu postgres /docker-entrypoint.sh postgres
+exec gosu postgres /docker-entrypoint.sh postgres

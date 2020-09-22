@@ -9,7 +9,6 @@ services:
         volumes:
             - data-master:/var/lib/postgresql/data
             - ./replication-entrypoint-master.sh:/replication-entrypoint.sh
-        command: bash -c '/replication-entrypoint.sh'
         ports: 
             - 5432:5432
 
