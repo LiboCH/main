@@ -25,15 +25,13 @@ out=$( eval "$cmd" )
 logMessage INFO "Master avaliable, creating base backup"
 rm -rf /var/lib/postgresql/data/*
 chown postgres:postgres /var/lib/postgresql/data
-gosu postgres pg_basebackup -h ${MASTER_IP} -p ${MASTER_PORT} -D /var/lib/postgresql/data/ -U replicator --wal-method=fetch
+gosu postgres pg_basebackup -h "${MASTER_IP}" -p "${MASTER_PORT}" -D /var/lib/postgresql/data/ -U replicator --wal-method=fetch
 
 logMessage INFO "Checking entry in pg_hba"
 pg_hba_line="host\treplication\t${REPLICATION_USER}\tall\tmd5\n"
-reload_required=0
 if [[ $( grep "$( printf ${pg_hba_line})" ${pg_hba_file} | wc -l | xargs ) -eq 0 ]] ; then
     logMessage INFO "No replicator in pg_hba.conf, adding... "
     printf $pg_hba_line >> ${pg_hba_file}
-    reload_required=1
 else
     logMessage INFO "Entry present in pg_hba"
 fi

@@ -12,7 +12,6 @@ fi
 pg_hba_file=/var/lib/postgresql/data/pg_hba.conf
 conf_file=/var/lib/postgresql/data/postgresql.conf
 
-level=INFO
 logMessage(){
     date=$(date "+%Y-%m-%d %T.%3N UTC")
     echo "$date" "${1}" "${2}"
@@ -51,7 +50,7 @@ fi
 logMessage INFO "Checking entry in pg_hba"
 pg_hba_line="host\treplication\t${REPLICATION_USER}\tall\tmd5\n"
 reload_required=0
-if [[ $( grep "$( printf ${pg_hba_line})" ${pg_hba_file} | wc -l | xargs ) -eq 0 ]] ; then
+if [[ $( grep -c "$( printf ${pg_hba_line})" ${pg_hba_file} | xargs ) -eq 0 ]] ; then
     logMessage INFO "No replicator in pg_hba.conf, adding... "
     printf $pg_hba_line >> ${pg_hba_file}
     reload_required=1
