@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+    database:
+        container_name: postgres-master
+        image: "postgres:11.9" 
+        env_file:
+            - database.env
+        volumes:
+            - data-master:/var/lib/postgresql/data
+            - ./replication-entrypoint-master.sh:/replication-entrypoint.sh
+        command: bash -c '/replication-entrypoint.sh'
+        ports: 
+            - 5432:5432
+
+volumes:
+    data-master:
+        driver: local
+        driver_opts:
+            o: bind
+            type: none
+            device: /home/libo/git/liboch/main/playground/docker/07_postgres_docker/data-master
