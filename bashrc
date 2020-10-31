@@ -131,6 +131,7 @@ umask 027
 export HISTSIZE=10000
 alias vi='vim'
 alias r='cd /home/libo/git/liboch/main'
+alias t='cd /home/libo/gitlab/general'
 export GREP_COLORS='mt=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36';
 export EDITOR=vim
 
