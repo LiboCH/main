@@ -31,9 +31,11 @@ class HDPCluster:
         self._ambari_host=ambari_host
         self._ambari_user=ambari_user
         self._ambari_password=ambari_password
+        self._service_order=['active explorer','atlas','region','hts','infra solar','kafka','grafana','metric monitor','ranger','ranger tag','ranger user','snamenode','hive','metric','data','name','zoo']
+        self._serice_start_order=['ZOOKEEPER','HFDS',
         self._url=self._check_protocol()
         self.cluster_name=self._get_cluster_name()
-    
+
     def get(self,url):
         req = self._url+self.cluster_name+'/'+url
         logger.debug(f'In self.get, req: {req}')
@@ -84,7 +86,7 @@ class HDPCluster:
         cluster_name=resp.json()['items'][0]['Clusters']['cluster_name']
         logger.info('Discovered cluster name: '+cluster_name)
         return cluster_name
-    
+
     def _get_component_state(self,service,component):
         resp = self.get('services/'+service+'/components/'+component).json()
         _component_counters=''
